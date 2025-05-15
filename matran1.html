@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhân Ma Trận</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .matrix-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .matrix {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        td {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+        input {
+            width: 50px;
+            text-align: center;
+            padding: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #2ecc71;
+            border-radius: 5px;
+            background-color: #e8f8f5;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nhân Hai Ma Trận</h1>
+    
+    <div class="matrix-container">
+        <div class="matrix" id="matrixA">
+            <h2>Ma Trận A</h2>
+            <div>
+                Số hàng: <input type="number" id="rowsA" min="1" value="2">
+                Số cột: <input type="number" id="colsA" min="1" value="2">
+                <button onclick="createMatrix('A')">Tạo Ma Trận</button>
+            </div>
+            <div id="matrixAInputs"></div>
+        </div>
+        
+        <div class="matrix" id="matrixB">
+            <h2>Ma Trận B</h2>
+            <div>
+                Số hàng: <input type="number" id="rowsB" min="1" value="2">
+                Số cột: <input type="number" id="colsB" min="1" value="2">
+                <button onclick="createMatrix('B')">Tạo Ma Trận</button>
+            </div>
+            <div id="matrixBInputs"></div>
+        </div>
+    </div>
+    
+    <button onclick="multiplyMatrices()">Nhân Ma Trận</button>
+    
+    <div id="result">
+        <h2>Kết Quả</h2>
+        <div id="resultMatrix"></div>
+        <div id="errorMessage" class="error"></div>
+    </div>
+
+    <script>
+        // Tạo ma trận nhập liệu
+        function createMatrix(matrix) {
+            const rows = parseInt(document.getElementById(`rows${matrix}`).value);
+            const cols = parseInt(document.getElementById(`cols${matrix}`).value);
+            const container = document.getElementById(`matrix${matrix}Inputs`);
+            
+            let html = '<table>';
+            for (let i = 0; i < rows; i++) {
+                html += '<tr>';
+                for (let j = 0; j < cols; j++) {
+                    html += `<td><input type="number" id="${matrix}${i}${j}" value="0"></td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</table>';
+            
+            container.innerHTML = html;
+        }
+        
+        // Nhân hai ma trận
+        function multiplyMatrices() {
+            // Lấy kích thước ma trận
+            const rowsA = parseInt(document.getElementById('rowsA').value);
+            const colsA = parseInt(document.getElementById('colsA').value);
+            const rowsB = parseInt(document.getElementById('rowsB').value);
+            const colsB = parseInt(document.getElementById('colsB').value);
+            
+            // Kiểm tra điều kiện nhân ma trận
+            if (colsA !== rowsB) {
+                document.getElementById('errorMessage').innerHTML = 
+                    "Không thể nhân ma trận! Số cột của A phải bằng số hàng của B.";
+                document.getElementById('resultMatrix').innerHTML = '';
+                return;
+            }
+            
+            document.getElementById('errorMessage').innerHTML = '';
+            
+            // Lấy giá trị ma trận A
+            const matrixA = [];
+            for (let i = 0; i < rowsA; i++) {
+                matrixA[i] = [];
+                for (let j = 0; j < colsA; j++) {
+                    matrixA[i][j] = parseFloat(document.getElementById(`A${i}${j}`).value) || 0;
+                }
+            }
+            
+            // Lấy giá trị ma trận B
+            const matrixB = [];
+            for (let i = 0; i < rowsB; i++) {
+                matrixB[i] = [];
+                for (let j = 0; j < colsB; j++) {
+                    matrixB[i][j] = parseFloat(document.getElementById(`B${i}${j}`).value) || 0;
+                }
+            }
+            
+            // Thực hiện phép nhân
+            const result = [];
+            for (let i = 0; i < rowsA; i++) {
+                result[i] = [];
+                for (let j = 0; j < colsB; j++) {
+                    let sum = 0;
+                    for (let k = 0; k < colsA; k++) {
+                        sum += matrixA[i][k] * matrixB[k][j];
+                    }
+                    result[i][j] = sum;
+                }
+            }
+            
+            // Hiển thị kết quả
+            let resultHTML = '<table>';
+            for (let i = 0; i < rowsA; i++) {
+                resultHTML += '<tr>';
+                for (let j = 0; j < colsB; j++) {
+                    resultHTML += `<td>${result[i][j].toFixed(2)}</td>`;
+                }
+                resultHTML += '</tr>';
+            }
+            resultHTML += '</table>';
+            
+            document.getElementById('resultMatrix').innerHTML = resultHTML;
+        }
+        
+        // Khởi tạo ma trận mặc định khi trang load
+        window.onload = function() {
+            createMatrix('A');
+            createMatrix('B');
+        };
+    </script>
+</body>
+</html>
