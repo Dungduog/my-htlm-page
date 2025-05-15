@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng Dụng Chia Tiền Thông Minh</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --background-color: #f5f7fa;
+            --text-color: #333;
+            --light-text: #fff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .result h2 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+        
+        .details {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .currency-selector {
+            margin-bottom: 20px;
+        }
+        
+        select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ứng Dụng Chia Tiền</h1>
+        <p class="description">Nhập tổng số tiền và số người để tính số tiền mỗi người cần đóng</p>
+        
+        <div class="currency-selector">
+            <label for="currency">Đơn vị tiền tệ:</label>
+            <select id="currency">
+                <option value="VND">🇻🇳 Đồng Việt Nam (VND)</option>
+                <option value="USD">🇺🇸 Đô la Mỹ (USD)</option>
+                <option value="EUR">🇪🇺 Euro (EUR)</option>
+                <option value="JPY">🇯🇵 Yên Nhật (JPY)</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="totalAmount">Tổng số tiền:</label>
+            <input type="number" id="totalAmount" placeholder="Nhập tổng số tiền cần chia" min="1">
+        </div>
+        
+        <div class="input-group">
+            <label for="peopleCount">Số người chia:</label>
+            <input type="number" id="peopleCount" placeholder="Nhập số người" min="1">
+        </div>
+        
+        <button id="calculateBtn">Tính toán</button>
+        
+        <div class="result" id="result">
+            <h2>Kết quả</h2>
+            <p>Mỗi người cần đóng:</p>
+            <div class="amount" id="amountPerPerson"></div>
+            <div class="details">
+                <p id="calculationDetails"></p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Ứng dụng được tạo bởi Dung Duog © 2023</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculateBtn');
+            const totalAmountInput = document.getElementById('totalAmount');
+            const peopleCountInput = document.getElementById('peopleCount');
+            const resultDiv = document.getElementById('result');
+            const amountPerPersonDiv = document.getElementById('amountPerPerson');
+            const calculationDetailsDiv = document.getElementById('calculationDetails');
+            const currencySelect = document.getElementById('currency');
+            
+            calculateBtn.addEventListener('click', function() {
+                // Lấy giá trị từ input
+                const totalAmount = parseFloat(totalAmountInput.value);
+                const peopleCount = parseInt(peopleCountInput.value);
+                const currency = currencySelect.value;
+                
+                // Kiểm tra hợp lệ
+                if (isNaN(totalAmount) || isNaN(peopleCount) || totalAmount <= 0 || peopleCount <= 0) {
+                    alert('Vui lòng nhập số tiền và số người hợp lệ!');
+                    return;
+                }
+                
+                // Tính toán
+                const amountPerPerson = totalAmount / peopleCount;
+                
+                // Hiển thị kết quả
+                displayResult(totalAmount, peopleCount, amountPerPerson, currency);
+            });
+            
+            function displayResult(totalAmount, peopleCount, amountPerPerson, currency) {
+                // Định dạng tiền tệ
+                let formattedTotal, formattedPerPerson;
+                
+                switch(currency) {
+                    case 'VND':
+                        formattedTotal = formatVND(totalAmount);
+                        formattedPerPerson = formatVND(amountPerPerson);
+                        break;
+                    case 'USD':
+                        formattedTotal = formatUSD(totalAmount);
+                        formattedPerPerson = formatUSD(amountPerPerson);
+                        break;
+                    case 'EUR':
+                        formattedTotal = formatEUR(totalAmount);
+                        formattedPerPerson = formatEUR(amountPerPerson);
+                        break;
+                    case 'JPY':
+                        formattedTotal = formatJPY(totalAmount);
+                        formattedPerPerson = formatJPY(amountPerPerson);
+                        break;
+                    default:
+                        formattedTotal = totalAmount.toFixed(2);
+                        formattedPerPerson = amountPerPerson.toFixed(2);
+                }
+                
+                // Hiển thị
+                amountPerPersonDiv.textContent = formattedPerPerson;
+                
+                calculationDetailsDiv.innerHTML = `
+                    <p>Tổng số tiền: <strong>${formattedTotal}</strong></p>
+                    <p>Số người chia: <strong>${peopleCount}</strong></p>
+                    <p>Mỗi người đóng: <strong>${formattedPerPerson}</strong></p>
+                `;
+                
+                resultDiv.style.display = 'block';
+            }
+            
+            // Các hàm định dạng tiền tệ
+            function formatVND(amount) {
+                return new Intl.NumberFormat('vi-VN', { 
+                    style: 'currency', 
+                    currency: 'VND' 
+                }).format(amount);
+            }
+            
+            function formatUSD(amount) {
+                return new Intl.NumberFormat('en-US', { 
+                    style: 'currency', 
+                    currency: 'USD' 
+                }).format(amount);
+            }
+            
+            function formatEUR(amount) {
+                return new Intl.NumberFormat('de-DE', { 
+                    style: 'currency', 
+                    currency: 'EUR' 
+                }).format(amount);
+            }
+            
+            function formatJPY(amount) {
+                return new Intl.NumberFormat('ja-JP', { 
+                    style: 'currency', 
+                    currency: 'JPY' 
+                }).format(amount);
+            }
+        });
+    </script>
+</body>
+</html>
